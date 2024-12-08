@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laravel_app
+    volumes:
+      - .:/var/www/html
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_KEY= # Ensure to set this to a real value if needed
+    depends_on:
+      - db
+    networks:
+      - laravel-network
+
+  webserver:
+    image: nginx:latest
+    container_name: nginx_server
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf  # Ensure nginx.conf is correctly configured
+    depends_on:
+      - app
+    networks:
+      - laravel-network
+
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    ports:
+      - "4306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: secret
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - laravel-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.1.1
+    container_name: phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+    ports:
+      - "5555:80"
+    depends_on:
+      - db
+    networks:
+      - laravel-network
+
+volumes:
+  dbdata: # Defined correctly here for MySQL
+
+networks:
+  laravel-network:
+    driver: bridge

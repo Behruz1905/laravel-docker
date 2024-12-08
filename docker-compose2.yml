@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+  bahruz-nginx:
+      container_name: bahruz-nginx
+      restart: unless-stopped
+      build:
+        context: ./:/var/www
+        dockerfile: docker/nginx/Dockerfile
+      volumes:
+        - ./:/var/www
+        - ./docker/nginx/${VHOST_FILE}:/etc/nginx/conf.d/default.conf
+      ports:
+        - "80"
+      links:
+        - bahruz-app
+      environment:
+        VIRTUAL_HOST: ${DOMAIN_HOST}
+        VIRTUAL_PORT: 80
+        LETSENCRYPT_HOST: ${DOMAIN_HOST}
+        LETSENCRYPT_EMAIL: ${DOMAIN_EMAIL}
+      networks:
+        - nginx-proxy
+        - firtsapp
+
+  bahruz-app:
+      container_name: bahruz-app
+      restart: unless-stopped
+      networks:
+        - firstapp
+
+  bahruz-mysql:
+    container_name: bahruz-mysql
+    restart: unless-stopped
+    networks:
+      - firstapp
+
+
+
+networks:
+  nginx-proxy:
+    external: true
