@@ -11,7 +11,7 @@
                 <div class="container mx-auto p-6">
                     <h1 class="text-2xl font-bold mb-6">Create Post</h1>
 
-                    <form action="{{ route('profile.edit') }}" method="POST" class="bg-white p-6 rounded-lg shadow-md">
+                    <form action="{{ route('store-post') }}" method="POST" class="bg-white p-6 rounded-lg shadow-md">
                     @csrf
 
                     <!-- Post Name -->
@@ -25,7 +25,7 @@
                         <!-- Post Content -->
                         <div class="mb-4">
                             <label for="content" class="block text-gray-700 font-bold mb-2">Content</label>
-                            <textarea name="content" id="content" rows="5"
+                            <textarea name="text" id="content" rows="5"
                                       class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                                       placeholder="Write your post content here" required></textarea>
                         </div>
