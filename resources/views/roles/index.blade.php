@@ -13,7 +13,7 @@
 
                     <!-- Add Button -->
                     <div class="mb-4">
-                        <a href="{{ route('add-post') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                        <a href="{{ route('roles.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                             Yenisini elave et
                         </a>
                     </div>
@@ -24,31 +24,27 @@
                             <thead>
                             <tr class="bg-gray-100">
                                 <th class="border border-gray-300 px-4 py-2 text-left">Name</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left">Text</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left">Date</th>
                                 <th class="border border-gray-300 px-4 py-2 text-left">Actions</th>
                             </tr>
                             </thead>
                             <tbody>
-                            @forelse ($posts as $post)
+                            @forelse ($roles as $role)
                                 <tr>
-                                    <td class="border border-gray-300 px-4 py-2">{{ $post->name }}</td>
-                                    <td class="border border-gray-300 px-4 py-2">{{ $post->text }}</td>
-                                    <td class="border border-gray-300 px-4 py-2">{{ $post->created_at }}</td>
+                                    <td class="border border-gray-300 px-4 py-2">{{ $role->name }}</td>
                                     <td class="border border-gray-300 px-4 py-2 flex gap-2">
                                         <!-- Edit Link -->
-                                        <a href="{{ route('posts.edit', $post->id) }}"
+                                        <a href="{{ route('roles.edit', $role->id) }}"
                                            class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">
                                             Edit
                                         </a>
 
                                         <!-- Delete Form -->
-                                        <form action="{{ route('posts.destroy', $post->id) }}" method="POST" class="inline">
+                                        <form action="{{ route('roles.destroy', $role->id) }}" method="POST" class="inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
                                                     class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                                                    onclick="return confirm('Are you sure you want to delete this post?')">
+                                                    onclick="return confirm('Are you sure you want to delete this role?')">
                                                 Delete
                                             </button>
                                         </form>
@@ -57,7 +53,7 @@
                             @empty
                                 <tr>
                                     <td colspan="3" class="border border-gray-300 px-4 py-2 text-center">
-                                        No posts available.
+                                        No roles available.
                                     </td>
                                 </tr>
                             @endforelse

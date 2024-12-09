@@ -31,6 +31,33 @@ class PostController extends Controller
 
     }
 
+    public function edit($id)
+    {
+        $post = Post::findOrFail($id);
+        return view('post.edit',['post' => $post]);
+    }
+
+    public function update($id,Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|max:255',
+            'text' => 'required',
+        ]);
+
+        $post = Post::findOrFail($id);
+        $post->update($validated);
+
+        return redirect()->back()->with('Post created');
+    }
+
+    public function delete($id)
+    {
+
+        Post::findOrFail($id)->delete();
+
+        return redirect()->route('dashboard')->with('Post deleted');
+    }
+
 
 }
 
