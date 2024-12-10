@@ -13,7 +13,7 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $roles = Role::orderBy('name')->get();
+        $roles = Role::query()->where('name', '!=', 'super-user')->orderBy('name')->get();
         return view('roles.index' , compact('roles'));
     }
 
@@ -31,7 +31,21 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|max:255',
+            'permissions' => 'required',
+            'permissions.*' => 'required|integer|exists:permissions,id',
+        ]);
+
+        $role = Role::create([
+            'name' => $validated['name'],
+        ]);
+
+        $permissions = Permission::query()->whereIn('id',$validated['permissions'])->get();
+
+        $role->syncPermissions($permissions);
+
+        return redirect()->back()->with('status', 'Role created');
     }
 
     /**
@@ -39,7 +53,7 @@ class RoleController extends Controller
      */
     public function show(Role $role)
     {
-        //
+
     }
 
     /**
@@ -47,7 +61,12 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
-        //
+        $permissions = Permission::query()->orderBy('name')->get();
+
+        return view('roles.edit',[
+                'permissions' => $permissions,
+                'role' => $role
+        ]);
     }
 
     /**
@@ -55,7 +74,19 @@ class RoleController extends Controller
      */
     public function update(Request $request, Role $role)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|max:255',
+            'permissions' => 'required',
+            'permissions.*' => 'required|integer|exists:permissions,id',
+        ]);
+
+        $role->update([
+            'name' => $validated['name']
+        ]);
+
+        $permissions = Permission::query()->whereIn('id',$validated['permissions'])->get();
+        $role->syncPermissions($permissions);
+        return redirect()->back()->with('status', 'Role updated');
     }
 
     /**
